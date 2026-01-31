@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class RestaurantMapper {
+public class RestaurantMapper implements IRestaurantMapper {
 
     public AvailableRestaurantsDTO toAvailableRestaurantsDTO(List<DealAtRestaurant> dealAtRestaurants) {
         List<DealDTO> dealDTOs = dealAtRestaurants.stream()
