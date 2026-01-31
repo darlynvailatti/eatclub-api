@@ -1,7 +1,7 @@
 package com.eatclub.controller;
 
 import com.eatclub.common.Constants;
-import com.eatclub.mapper.RestaurantMapper;
+import com.eatclub.mapper.IRestaurantMapper;
 import com.eatclub.model.dtos.AvailableRestaurantsDTO;
 import com.eatclub.model.dtos.ErrorDTO;
 import com.eatclub.model.dtos.PeakTimeDTO;
@@ -21,9 +21,9 @@ import java.time.format.DateTimeParseException;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-    private final RestaurantMapper restaurantMapper;
+    private final IRestaurantMapper restaurantMapper;
 
-    public RestaurantController(RestaurantService restaurantService, RestaurantMapper restaurantMapper) {
+    public RestaurantController(RestaurantService restaurantService, IRestaurantMapper restaurantMapper) {
         this.restaurantService = restaurantService;
         this.restaurantMapper = restaurantMapper;
     }
