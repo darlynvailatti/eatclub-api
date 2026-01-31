@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Deal {
+    private String objectId;
     private String restaurantId;
     private Float discount;
     private Boolean dineIn;

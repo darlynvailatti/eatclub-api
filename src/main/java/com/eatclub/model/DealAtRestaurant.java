@@ -1,6 +1,4 @@
-package com.eatclub.model.dtos;
-
-import java.util.List;
+package com.eatclub.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AvailableDealsDTO {
-    private List<DealDTO> deals;
+public class DealAtRestaurant {
+    private Restaurant restaurant;
+    private Deal deal;
 }
