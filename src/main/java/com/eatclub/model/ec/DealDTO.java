@@ -1,4 +1,4 @@
-package com.eatclub.model.eccdn;
+package com.eatclub.model.ec;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

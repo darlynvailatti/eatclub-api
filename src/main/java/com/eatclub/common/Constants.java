@@ -10,4 +10,5 @@ public class Constants {
         .appendPattern("h:mma")
         .toFormatter(Locale.ENGLISH);
     public static final DateTimeFormatter HH_MM_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    public static final String EC_API_CHALLENGE_ENDPOINT = "https://eccdn.com.au/misc/challengedata.json";
 }
