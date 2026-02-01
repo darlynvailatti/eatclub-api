@@ -5,7 +5,7 @@ import com.eatclub.mapper.IRestaurantMapper;
 import com.eatclub.model.dtos.AvailableRestaurantsDTO;
 import com.eatclub.model.dtos.ErrorDTO;
 import com.eatclub.model.dtos.PeakTimeDTO;
-import com.eatclub.service.RestaurantService;
+import com.eatclub.service.IRestaurantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +20,10 @@ import java.time.format.DateTimeParseException;
 @RequestMapping("/restaurants")
 public class RestaurantController {
 
-    private final RestaurantService restaurantService;
+    private final IRestaurantService restaurantService;
     private final IRestaurantMapper restaurantMapper;
 
-    public RestaurantController(RestaurantService restaurantService, IRestaurantMapper restaurantMapper) {
+    public RestaurantController(IRestaurantService restaurantService, IRestaurantMapper restaurantMapper) {
         this.restaurantService = restaurantService;
         this.restaurantMapper = restaurantMapper;
     }

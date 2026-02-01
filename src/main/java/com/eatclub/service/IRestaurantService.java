@@ -6,7 +6,7 @@ import com.eatclub.model.PeakTimeWindow;
 import java.time.LocalTime;
 import java.util.List;
 
-public interface RestaurantService {
+public interface IRestaurantService {
     List<DealAtRestaurant> getAvailableRestaurantDealsByTime(LocalTime time);
     PeakTimeWindow getPeakTimeWindow();
 }

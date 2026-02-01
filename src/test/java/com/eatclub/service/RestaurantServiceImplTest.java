@@ -4,7 +4,7 @@ import com.eatclub.model.Deal;
 import com.eatclub.model.DealAtRestaurant;
 import com.eatclub.model.PeakTimeWindow;
 import com.eatclub.model.Restaurant;
-import com.eatclub.repository.LocalRepository;
+import com.eatclub.repository.ILocalRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 class RestaurantServiceImplTest {
 
     @Mock
-    private LocalRepository restaurantRepository;
+    private ILocalRepository restaurantRepository;
 
     @InjectMocks
     private RestaurantServiceImpl restaurantService;

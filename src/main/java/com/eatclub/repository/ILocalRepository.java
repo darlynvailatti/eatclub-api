@@ -5,7 +5,7 @@ import com.eatclub.model.Restaurant;
 import java.time.LocalTime;
 import java.util.List;
 
-public interface LocalRepository {
+public interface ILocalRepository {
     List<Restaurant> findAllRestaurants();
     List<Restaurant> findAvailableRestaurantsAt(LocalTime time);
     List<Deal> findDealsByRestaurantId(String restaurantId);

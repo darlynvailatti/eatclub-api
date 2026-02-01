@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-public class InMemoryRestaurantRepository implements LocalRepository {
+public class InMemoryRestaurantRepository implements ILocalRepository {
 
     private List<Restaurant> restaurants;
     private Map<String, List<Deal>> dealsByRestaurantId;

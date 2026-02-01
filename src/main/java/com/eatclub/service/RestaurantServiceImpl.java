@@ -4,7 +4,7 @@ import com.eatclub.model.Deal;
 import com.eatclub.model.DealAtRestaurant;
 import com.eatclub.model.PeakTimeWindow;
 import com.eatclub.model.Restaurant;
-import com.eatclub.repository.LocalRepository;
+import com.eatclub.repository.ILocalRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class RestaurantServiceImpl implements RestaurantService {
+public class RestaurantServiceImpl implements IRestaurantService {
 
-    private final LocalRepository restaurantRepository;
+    private final ILocalRepository restaurantRepository;
 
-    public RestaurantServiceImpl(LocalRepository restaurantRepository) {
+    public RestaurantServiceImpl(ILocalRepository restaurantRepository) {
         this.restaurantRepository = restaurantRepository;
     }
 

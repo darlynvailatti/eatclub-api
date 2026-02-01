@@ -8,7 +8,7 @@ import com.eatclub.model.Restaurant;
 import com.eatclub.model.dtos.AvailableRestaurantsDTO;
 import com.eatclub.model.dtos.ErrorDTO;
 import com.eatclub.model.dtos.PeakTimeDTO;
-import com.eatclub.service.RestaurantService;
+import com.eatclub.service.IRestaurantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 class RestaurantControllerTest {
 
     @Mock
-    private RestaurantService restaurantService;
+    private IRestaurantService restaurantService;
 
     @Mock
     private IRestaurantMapper restaurantMapper;
