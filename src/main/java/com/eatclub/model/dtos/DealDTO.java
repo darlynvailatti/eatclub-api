@@ -20,6 +20,18 @@ public class DealDTO {
     private String restaurantOpen;
     private String restaurantClose;
 
+    /*
+     * TODO: The API contract specified on the challenge description uses String
+     * values. This is not ideal, as it would be better to have the deal fields as
+     * primitive types. It would be important to check with the API contract owner
+     * to see if this can be changed.
+     * e.g:
+     * private String objectId;
+     * private Float discount;
+     * private Boolean dineIn;
+     * private Boolean lightning;
+     * private Integer qtyLeft;
+     */
     private String objectId;
     private String discount;
     private String dineIn;
