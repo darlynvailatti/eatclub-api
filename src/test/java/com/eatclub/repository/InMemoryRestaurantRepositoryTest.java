@@ -1,93 +1,96 @@
 package com.eatclub.repository;
 
+import com.eatclub.common.Constants;
 import com.eatclub.model.Deal;
 import com.eatclub.model.Restaurant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Field;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 class InMemoryRestaurantRepositoryTest {
 
+    private RestTemplate restTemplate;
+    private MockRestServiceServer mockServer;
     private InMemoryRestaurantRepository repository;
     private List<Restaurant> testRestaurants;
-    private Map<String, List<Deal>> testDealsByRestaurantId;
+    private List<Deal> testDeals;
 
     @BeforeEach
     void setUp() throws Exception {
-        repository = createTestRepository();
+        restTemplate = new RestTemplate();
+        mockServer = MockRestServiceServer.bindTo(restTemplate).build();
+        setupMockRestTemplateResponse();
+        repository = new InMemoryRestaurantRepository(restTemplate);
+        testRestaurants = repository.findAllRestaurants();
+        testDeals = new ArrayList<>();
+        testDeals.addAll(repository.findDealsByRestaurantId("r1"));
+        testDeals.addAll(repository.findDealsByRestaurantId("r2"));
+        testDeals.addAll(repository.findDealsByRestaurantId("r3"));
     }
 
-    private InMemoryRestaurantRepository createTestRepository() throws Exception {
-        InMemoryRestaurantRepository repo;
-        try {
-            repo = new InMemoryRestaurantRepository();
-        } catch (Exception e) {
-            repo = createRepositoryWithoutApiCall();
-        }
-        
-        testRestaurants = new ArrayList<>();
-        testDealsByRestaurantId = new HashMap<>();
-        
-        Restaurant restaurant1 = new Restaurant("r1", "Restaurant 1", "123 Main St", "City",
-                LocalTime.of(10, 0), LocalTime.of(22, 0));
-        Restaurant restaurant2 = new Restaurant("r2", "Restaurant 2", "456 Oak Ave", "Suburb",
-                LocalTime.of(11, 30), LocalTime.of(23, 30));
-        Restaurant restaurant3 = new Restaurant("r3", "Restaurant 3", "789 Pine St", "Town",
-                LocalTime.of(22, 0), LocalTime.of(2, 0));
-        Restaurant restaurant4 = new Restaurant("r4", "Restaurant 4", "321 Elm St", "Village",
-                LocalTime.of(9, 0), LocalTime.of(17, 0));
-        
-        testRestaurants.add(restaurant1);
-        testRestaurants.add(restaurant2);
-        testRestaurants.add(restaurant3);
-        testRestaurants.add(restaurant4);
-        
-        Deal deal1 = new Deal("d1", "r1", 10.0f, true, false, 5);
-        Deal deal2 = new Deal("d2", "r1", 15.0f, false, true, 3);
-        Deal deal3 = new Deal("d3", "r2", 20.0f, true, false, 10);
-        Deal deal4 = new Deal("d4", "r3", 25.0f, true, false, 8);
-        
-        testDealsByRestaurantId.put("r1", Arrays.asList(deal1, deal2));
-        testDealsByRestaurantId.put("r2", Arrays.asList(deal3));
-        testDealsByRestaurantId.put("r3", Arrays.asList(deal4));
-        testDealsByRestaurantId.put("r4", new ArrayList<>());
-        
-        setPrivateField(repo, "restaurants", testRestaurants);
-        setPrivateField(repo, "dealsByRestaurantId", testDealsByRestaurantId);
-        
-        return repo;
-    }
+    private void setupMockRestTemplateResponse() {
+        String jsonResponse = """
+            {
+              "restaurants": [
+                {
+                  "objectId": "r1",
+                  "name": "Restaurant 1",
+                  "address1": "123 Main St",
+                  "suburb": "City",
+                  "open": "10:00am",
+                  "close": "10:00pm",
+                  "deals": [
+                    {"objectId": "d1", "discount": "10.0", "dineIn": "true", "lightning": "false", "qtyLeft": "5"},
+                    {"objectId": "d2", "discount": "15.0", "dineIn": "false", "lightning": "true", "qtyLeft": "3"}
+                  ]
+                },
+                {
+                  "objectId": "r2",
+                  "name": "Restaurant 2",
+                  "address1": "456 Oak Ave",
+                  "suburb": "Suburb",
+                  "open": "11:30am",
+                  "close": "11:30pm",
+                  "deals": [
+                    {"objectId": "d3", "discount": "20.0", "dineIn": "true", "lightning": "false", "qtyLeft": "10"}
+                  ]
+                },
+                {
+                  "objectId": "r3",
+                  "name": "Restaurant 3",
+                  "address1": "789 Pine St",
+                  "suburb": "Town",
+                  "open": "10:00pm",
+                  "close": "2:00am",
+                  "deals": [
+                    {"objectId": "d4", "discount": "25.0", "dineIn": "true", "lightning": "false", "qtyLeft": "8"}
+                  ]
+                },
+                {
+                  "objectId": "r4",
+                  "name": "Restaurant 4",
+                  "address1": "321 Elm St",
+                  "suburb": "Village",
+                  "open": "9:00am",
+                  "close": "5:00pm",
+                  "deals": []
+                }
+              ]
+            }
+            """;
 
-    private InMemoryRestaurantRepository createRepositoryWithoutApiCall() throws Exception {
-        try {
-            java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-            
-            InMemoryRestaurantRepository repo = (InMemoryRestaurantRepository) 
-                unsafe.allocateInstance(InMemoryRestaurantRepository.class);
-            
-            setPrivateField(repo, "restaurants", new ArrayList<>());
-            setPrivateField(repo, "dealsByRestaurantId", new HashMap<>());
-            return repo;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create test repository", e);
-        }
-    }
-
-    private void setPrivateField(Object target, String fieldName, Object value) throws Exception {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, value);
+        mockServer.expect(requestTo(Constants.EC_API_CHALLENGE_ENDPOINT))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -109,11 +112,23 @@ class InMemoryRestaurantRepositoryTest {
 
     @Test
     void testFindAllRestaurants_WithEmptyList() throws Exception {
-        setPrivateField(repository, "restaurants", new ArrayList<>());
+        RestTemplate emptyRestTemplate = new RestTemplate();
+        MockRestServiceServer emptyMockServer = MockRestServiceServer.bindTo(emptyRestTemplate).build();
         
-        List<Restaurant> result = repository.findAllRestaurants();
+        String jsonResponse = """
+            {
+              "restaurants": []
+            }
+            """;
+        
+        emptyMockServer.expect(requestTo(Constants.EC_API_CHALLENGE_ENDPOINT))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+        
+        InMemoryRestaurantRepository emptyRepo = new InMemoryRestaurantRepository(emptyRestTemplate);
+        List<Restaurant> result = emptyRepo.findAllRestaurants();
         
         assertTrue(result.isEmpty());
+        emptyMockServer.verify();
     }
 
     @Test
@@ -270,16 +285,35 @@ class InMemoryRestaurantRepositoryTest {
 
     @Test
     void testFindAvailableRestaurantsAt_WithAllRestaurantsOpen() throws Exception {
-        Restaurant allDayRestaurant = new Restaurant("r5", "All Day Restaurant", "999 Test St", "City",
-                LocalTime.of(0, 0), LocalTime.of(23, 59));
-        List<Restaurant> allOpenRestaurants = Arrays.asList(allDayRestaurant);
-        setPrivateField(repository, "restaurants", allOpenRestaurants);
+        RestTemplate allDayRestTemplate = new RestTemplate();
+        MockRestServiceServer allDayMockServer = MockRestServiceServer.bindTo(allDayRestTemplate).build();
         
+        String jsonResponse = """
+            {
+              "restaurants": [
+                {
+                  "objectId": "r5",
+                  "name": "All Day Restaurant",
+                  "address1": "999 Test St",
+                  "suburb": "City",
+                  "open": "12:00am",
+                  "close": "11:59pm",
+                  "deals": []
+                }
+              ]
+            }
+            """;
+        
+        allDayMockServer.expect(requestTo(Constants.EC_API_CHALLENGE_ENDPOINT))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+        
+        InMemoryRestaurantRepository allDayRepo = new InMemoryRestaurantRepository(allDayRestTemplate);
         LocalTime queryTime = LocalTime.of(12, 0);
-        List<Restaurant> result = repository.findAvailableRestaurantsAt(queryTime);
+        List<Restaurant> result = allDayRepo.findAvailableRestaurantsAt(queryTime);
         
         assertEquals(1, result.size());
         assertEquals("r5", result.get(0).getObjectId());
+        allDayMockServer.verify();
     }
 
     @Test

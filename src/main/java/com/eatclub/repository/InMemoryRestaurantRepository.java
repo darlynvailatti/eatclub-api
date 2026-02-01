@@ -20,10 +20,12 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryRestaurantRepository implements ILocalRepository {
 
+    private final RestTemplate restTemplate;
     private List<Restaurant> restaurants;
     private Map<String, List<Deal>> dealsByRestaurantId;
 
-    public InMemoryRestaurantRepository() throws Exception {
+    public InMemoryRestaurantRepository(RestTemplate restTemplate) throws Exception {
+        this.restTemplate = restTemplate;
         /*
          * TODO: Currently the data is being fetched eagerly. This could be changed to a
          * lazy fetch. Also, to avoid fetching the data multiple times, we do this just
@@ -34,10 +36,8 @@ public class InMemoryRestaurantRepository implements ILocalRepository {
     }
 
     private void fetchDataFromAPI() throws Exception {
-
         ResponseEntity<RestaurantsDTO> response = null;
         try {
-            RestTemplate restTemplate = new RestTemplate();
             response = restTemplate
                     .getForEntity(Constants.EC_API_CHALLENGE_ENDPOINT, RestaurantsDTO.class);
         } catch (Exception e) {
